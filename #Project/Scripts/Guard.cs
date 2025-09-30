@@ -7,6 +7,7 @@ public class Guard : MonoBehaviour
     {
         Patrol,
         Chase,
+        GameOver, // exo
     }
 
     private GuardState state;
@@ -43,7 +44,7 @@ public class Guard : MonoBehaviour
                 {
                     ChooseNewDestination(); // si il arrive à la destionation, en choisit une autre
                 }
-                
+
                 if (CanWeSeeThePlayer())
                 {
                     state = GuardState.Chase; // si on voit le joueur, on le poursuit
@@ -59,6 +60,14 @@ public class Guard : MonoBehaviour
             case GuardState.Chase:
                 agent.SetDestination(playerTranform.position); // l'agent prend la position du player
                 break;
+
+                // case GuardState.GameOver: //exo
+                //     /* if (player touche agent )
+                //     {   
+                //         Debug.Log("Game Over, vous etes mort")
+                //     } 
+                //     */
+                //     break;
         }
     }
 
@@ -69,15 +78,28 @@ public class Guard : MonoBehaviour
 
         if (Physics.Raycast(transform.position + Vector3.up * 0.3f, playerDirection, out hit, maxDistance)) // out = c'est quelque chose que je donne vide et que j'attends que unity le remplisse avec de bonnes infos
         {
-            // Debug.Log($"we hit the {hit.collider.name}");
             if (hit.collider.CompareTag("Player"))
             {
+                Debug.Log($"we hit something");
                 if (Vector3.Angle(transform.forward, playerDirection) <= maxAngle)
                 {
                     return true;
                 }
             }
         }
-        return false; 
+        return false;
+    }
+
+    // void GameOver() //exo
+    // {
+
+    // }
+    
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("Game Over, vous êtes mort");
+        }
     }
 }
